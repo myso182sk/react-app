@@ -66,11 +66,7 @@ class PricingTable extends React.Component {
                                     <div className="plan-features">
                                         {plan.attributes.features.map(( feature, j ) =>
                                             ( 
-                                                feature.icon == true 
-                                                    ? 
-                                                <p key={j}><i className="fa fa-solid fa-check"></i> {feature.label}</p> 
-                                                    : 
-                                                <p key={j}><i className="fa fa-solid fa-times"></i> {feature.label}</p>  
+                                                <p key={j}><i className={( feature.icon == true ) ? "fa fa-solid fa-check" : "fa fa-solid fa-times"}></i> {feature.label}</p> 
                                             )
                                         )}
                                     </div>
