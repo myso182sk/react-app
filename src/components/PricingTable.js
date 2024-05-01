@@ -1,77 +1,92 @@
-function PricingTable() {
-    return(
-        <section id="testimonial">
-            <div className="container">
-                <div className="section-heading text-center">
-                    <div className="col-md-12 col-xs-12">
-                        <h1>Pricing <span>Table</span></h1>
-                        <p className="subheading">Lorem ipsum dolor sit amet sit legimus copiosae instructior ei ut vix denique fierentis ea saperet inimicu ut qui dolor oratio mnesarchum ea utamur impetus fuisset nam nostrud euismod volumus ne mei.</p>
+import React from 'react';
+import { BlocksRenderer, type BlocksContent } from '@strapi/blocks-react-renderer';
+import { formatData, formatURL } from '../utils/formatData.js';
+
+class PricingTable extends React.Component {
+    
+    constructor(props) {
+        super(props);
+        this.pageID = this.props.pageID;
+        this.index = this.props.index;
+        this.state = {
+            data: []
+        };
+    }
+
+    componentDidMount() {
+        this.fetchData();
+    }
+
+    fetchData = async () => {
+        try {
+            const params = { 
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const response = await fetch(`${process.env.REACT_APP_BACKEND}` + `api/pages/` + this.props.pageID + `?populate=deep,10`, params);
+            const jsonData = await response.json();
+            this.setState({ data: jsonData.data });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    render() {
+
+        const { data } = this.state;
+
+        if ( !data.attributes ) {
+            return;
+        }
+
+        var pricingTableHeadline = data.attributes.contentSections[this.index].headline;
+        var pricingTablecontent = data.attributes.contentSections[this.index].content;
+        var objectPlans = data.attributes.contentSections[this.index].plans.data;
+
+        return (
+
+            <section id="testimonial">
+
+                <div className="container">
+
+                    <div className="section-heading text-center">
+                        <div className="col-md-12 col-xs-12">
+                            <h1>{pricingTableHeadline}</h1>
+                            <BlocksRenderer content={pricingTablecontent} />
+                        </div>
+                    </div>
+
+                    <div className="row d-flex justify-content-center">
+                        {objectPlans.map(( plan, i ) => 
+                            <div key={i} className="col-md-3 col-sm-12 block">
+                                <div className="testimonial_box">
+                                    <h2 className="text-center"><span>{plan.attributes.name}</span></h2>
+                                    <div className="plan-features">
+                                        {plan.attributes.features.map(( feature, j ) =>
+                                            ( 
+                                                feature.icon == true 
+                                                    ? 
+                                                <p key={j}><i className="fa fa-solid fa-check"></i> {feature.label}</p> 
+                                                    : 
+                                                <p key={j}><i className="fa fa-solid fa-times"></i> {feature.label}</p>  
+                                            )
+                                        )}
+                                    </div>
+                                    <h3 className="text-center"><span>{plan.attributes.price}</span></h3>
+                                </div>
+                            </div>
+                        )}
+
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-md-3 col-sm-12 block ">
-                        <div className="testimonial_box">
-                            <h2 className="text-center">Basic</h2>
-                            <p><i className="fa fa-solid fa-check"></i> Landing Page</p>
-                            <p><i className="fa fa-solid fa-times"></i> Additional Static Pages</p>
-                            <p><i className="fa fa-solid fa-times"></i> Listings</p>
-                            <p><i className="fa fa-solid fa-check"></i> SEO</p>
-                            <p><i className="fa fa-solid fa-times"></i> Remove branding</p>
-                            <p><i className="fa fa-solid fa-check"></i> Newsletter signup</p>
-                            <p><i className="fa fa-solid fa-check"></i> Setup Cost</p>
-                            <h3 className="text-center">$5 monthly</h3>
-                        </div>
-                    </div>
+            </section>
 
-                    <div className="col-md-3 col-sm-12 block">
-                        <div className="testimonial_box">
-                            <h2 className="text-center">Standard</h2>
-                            <p><i className="fa fa-solid fa-check"></i> Landing Page</p>
-                            <p><i className="fa fa-solid fa-check"></i> Additional Static Pages</p>
-                            <p><i className="fa fa-solid fa-check"></i> Listings</p>
-                            <p><i className="fa fa-solid fa-check"></i> SEO</p>
-                            <p><i className="fa fa-solid fa-times"></i> Remove branding</p>
-                            <p><i className="fa fa-solid fa-check"></i> Newsletter signup</p>
-                            <p><i className="fa fa-solid fa-times"></i> Setup Cost</p>
-                            <h3 className="text-center">$15 monthly</h3>
-                        </div>
-                    </div>
+        )
 
-                    <div className="col-md-3 col-sm-12 block">
-                        <div className="testimonial_box">
-                            <h2 className="text-center">Premium</h2>
-                            <p><i className="fa fa-solid fa-check"></i> Landing Page</p>
-                            <p><i className="fa fa-solid fa-check"></i> Additional Static Pages</p>
-                            <p><i className="fa fa-solid fa-check"></i> Listings</p>
-                            <p><i className="fa fa-solid fa-check"></i> SEO</p>
-                            <p><i className="fa fa-solid fa-check"></i> Remove branding</p>
-                            <p><i className="fa fa-solid fa-check"></i> Newsletter signup</p>
-                            <p><i className="fa fa-solid fa-times"></i> Setup Cost</p>
-                            <h3 className="text-center">$25 monthly</h3>
-                        </div>
-                    </div>
-
-                    <div className="col-md-3 col-sm-12 block">
-                        <div className="testimonial_box">
-                            <h2 className="text-center">Custom</h2>
-                            <p><i className="fa fa-solid fa-check"></i> Landing Page</p>
-                            <p><i className="fa fa-solid fa-check"></i> Additional Static Pages</p>
-                            <p><i className="fa fa-solid fa-check"></i> Listings</p>
-                            <p><i className="fa fa-solid fa-check"></i> SEO</p>
-                            <p><i className="fa fa-solid fa-check"></i> Remove branding</p>
-                            <p><i className="fa fa-solid fa-check"></i> Newsletter signup</p>
-                            <p><i className="fa fa-solid fa-check"></i> Setup Cost</p>
-                            <h3 className="text-center">TBD</h3>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </section>
-
-    )
+    }
 }
 
 export default PricingTable;
