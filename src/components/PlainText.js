@@ -5,6 +5,8 @@ class PlainText extends React.Component {
 
     constructor(props) {
         super(props);
+        this.pageID = this.props.pageID;
+        this.index = this.props.index;
         this.state = {
             data: []
         };
@@ -22,7 +24,7 @@ class PlainText extends React.Component {
                     'Content-Type': 'application/json',
                 },
             };
-            const response = await fetch(`${process.env.REACT_APP_BACKEND}` + `api/pages/1?populate=contentSections`, params);
+            const response = await fetch(`${process.env.REACT_APP_BACKEND}` + `api/pages/` + this.props.pageID + `?populate=deep,10`, params);
             const jsonData = await response.json();
             this.setState({ data: jsonData.data });
         } catch (error) {
@@ -43,7 +45,7 @@ class PlainText extends React.Component {
                 <div className="container">
                     <div className="section-heading text-center">
                         <div className="col-md-12 col-xs-12">
-                            <BlocksRenderer content={data.attributes.contentSections[1].content} />
+                            <BlocksRenderer content={data.attributes.contentSections[this.index].content} />
                         </div>
                     </div>
                 </div>
