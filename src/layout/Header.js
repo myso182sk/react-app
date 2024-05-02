@@ -42,6 +42,7 @@ class Header extends React.Component {
 
         const siteName = formatData(data.attributes.siteName);
         const siteSlogan = formatData(data.attributes.siteSlogan);
+        const currentSite = window.location.origin;
 
         return (
             <div>
@@ -57,7 +58,7 @@ class Header extends React.Component {
                                         <span className="icon-bar"></span>
                                         <span className="icon-bar"></span>
                                     </button>
-                                    <a className="navbar-brand" href="#">
+                                    <a className="navbar-brand" href={currentSite}>
                                         <h1>{siteName}</h1><span>{siteSlogan}</span>
                                     </a>
                                 </div>
